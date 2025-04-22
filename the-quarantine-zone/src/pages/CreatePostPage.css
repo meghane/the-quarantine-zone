@@ -1,0 +1,123 @@
+/* src/pages/CreatePostPage.css */
+.create-post-page {
+    padding: 2rem 0; /* Add some padding top and bottom */
+    /* Center the form container if needed */
+    max-width: 960px; /* Match the container width */
+    margin: 0 auto; /* Center horizontally */
+    padding-left: 1rem; /* Add side padding */
+    padding-right: 1rem; /* Add side padding */
+  }
+  
+  .create-post-page h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+    /* Use a thematic font/color if desired */
+    /* Example: color: #A9A9A9; */ /* Dark Gray */
+    /* Example: font-family: 'Road Rage', sans-serif; */ /* Using the title font */
+  }
+  
+  .create-post-form {
+    max-width: 650px; /* Limit form width */
+    margin: 0 auto; /* Center the form itself */
+    padding: 2rem 2.5rem; /* More padding inside the form */
+    background-color: #ffffff; /* White background for the form card */
+    border: 1px solid #ccc; /* Slightly darker border */
+    border-radius: 8px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1); /* Slightly stronger shadow */
+    /* Use thematic background/border if desired */
+    /* Example: background-color: rgba(40, 40, 40, 0.9); */ /* Dark semi-transparent */
+    /* Example: border: 1px solid #555; */
+  }
+  
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 0.6rem; /* Slightly more space below label */
+    font-weight: bold;
+    color: #444; /* Slightly darker label text */
+    /* Example: color: #ddd; */ /* Lighter text for dark background */
+  }
+  
+  .form-group .required {
+      color: #d9534f; /* Keep asterisk red for visibility */
+      margin-left: 3px;
+  }
+  
+  .form-group input[type="text"],
+  .form-group input[type="url"],
+  .form-group textarea {
+    width: 100%;
+    padding: 0.8rem 1rem; /* Slightly more padding */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-family: inherit; /* Use the body's font */
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+    background-color: #fff; /* Ensure light background for inputs */
+    color: #333; /* Ensure dark text */
+    /* Example for dark theme: */
+    /* background-color: #555; */
+    /* color: #eee; */
+    /* border: 1px solid #777; */
+  }
+  
+  .form-group textarea {
+    resize: vertical;
+    min-height: 120px; /* Slightly taller textarea */
+  }
+  
+  /* Adjust focus style to match theme */
+  .form-group input:focus,
+  .form-group textarea:focus {
+      border-color: #006666; /* Darker teal focus */
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(0, 128, 128, 0.2); /* Teal focus ring */
+      /* Example Dark theme focus: */
+      /* border-color: #aaa; */
+      /* box-shadow: 0 0 0 3px rgba(180, 180, 180, 0.3); */
+  }
+  
+  
+  .submit-button {
+    display: block;
+    width: 100%;
+    padding: 0.9rem 1.5rem; /* Slightly larger button */
+    /* Use a thematic button color - maybe a worn green or brown? */
+    background-color: #527552; /* Muted Green Example */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease; /* Add transform transition */
+  }
+  
+  .submit-button:hover:not(:disabled) { /* Don't change style when disabled */
+    background-color: #415e41; /* Darker Muted Green */
+    transform: translateY(-1px); /* Subtle lift effect */
+  }
+  
+  .submit-button:active:not(:disabled) {
+      transform: translateY(0px); /* Press down effect */
+  }
+  
+  
+  .submit-button:disabled {
+      background-color: #999; /* Grey out when disabled */
+      cursor: not-allowed;
+  }
+  
+  /* Optional: Style for error messages */
+  .error-message {
+      color: #d9534f; /* Red error text */
+      background-color: #f2dede; /* Light red background */
+      border: 1px solid #ebccd1; /* Reddish border */
+      padding: 0.75rem 1.25rem;
+      border-radius: 4px;
+      margin-bottom: 1.5rem;
+      text-align: center;
+  }

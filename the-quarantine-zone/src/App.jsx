@@ -2,7 +2,8 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import HomePage from './pages/HomePage';
-// Import other pages later (e.g., CreatePostPage, PostDetailPage)
+import CreatePostPage from './pages/CreatePostPage';
+
 
 function App() {
   return (
@@ -12,7 +13,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           {/* Define other routes here later */}
-          {/* <Route path="/create" element={<CreatePostPage />} /> */}
+          <Route path="/create" element={<CreatePostPage />} />
           {/* <Route path="/post/:postId" element={<PostDetailPage />} /> */}
           {/* <Route path="*" element={<div>Page Not Found</div>} /> */}
         </Routes>
