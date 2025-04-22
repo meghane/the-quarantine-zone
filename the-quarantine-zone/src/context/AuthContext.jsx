@@ -56,7 +56,7 @@ export function AuthProvider({ children }) {
             setProfile({ username: userMetadata.username }); // Simple profile from metadata
         }
      } else if (!user) {
-         setProfile(null); // Clear profile on logout
+         setProfile(null); 
      }
    }, [user, profile]);
 
@@ -64,12 +64,12 @@ export function AuthProvider({ children }) {
   const value = {
     session,
     user,
-    profile, // Provide profile data
+    profile, 
     loading,
-    signOut: () => supabase.auth.signOut(), // Provide signOut function
+    signOut: () => supabase.auth.signOut(), 
   };
 
-  // Don't render children until loading is complete
+
   return (
     <AuthContext.Provider value={value}>
       {!loading && children}
@@ -77,7 +77,6 @@ export function AuthProvider({ children }) {
   );
 }
 
-// Custom hook to use the auth context
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
