@@ -12,9 +12,10 @@
   }
   
   .site-title a {
-    font-size: 1.8rem;
+    font-size: 3.0rem;
     font-weight: bold;
     color: white;
+    font-family: 'Road Rage';
   }
   
   .search-form {
