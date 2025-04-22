@@ -1,82 +1,107 @@
 // src/pages/CreatePostPage.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '../supabaseClient'; // 👈 Import Supabase client (adjust path if needed)
-import './CreatePostPage.css';
+import { supabase } from '../supabaseClient'; // Adjust path if needed
+import { useAuth } from '../context/AuthContext'; // Adjust path if needed
+import './CreatePostPage.css'; // Make sure this CSS file exists and is linked
 
 function CreatePostPage() {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [imageUrl, setImageUrl] = useState('');
-  const [isLoading, setIsLoading] = useState(false); // 👈 Add loading state
-  const [error, setError] = useState(null); // Optional: state for displaying errors
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const { user } = useAuth(); // Get the logged-in user object from context
   const navigate = useNavigate();
 
-  // 👇 Make handleSubmit async
+  // Log user object on component render/re-render (for debugging)
+  console.log('CreatePostPage User object:', user);
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setError(null); // Clear previous errors
+    setError(null);
 
+    // Log the user ID right before attempting submission (for debugging)
+    console.log('Submitting post with User ID:', user?.id);
+
+    // Ensure user is logged in before attempting to create post
+    // ProtectedRoute should handle this, but an extra check doesn't hurt
+    if (!user) {
+        setError('You must be logged in to create a post.');
+        // Optionally redirect to login
+        // navigate('/signin');
+        return;
+    }
+
+    // Basic validation
     if (!title.trim()) {
-      setError('Post title is required!'); // Use state for error messages
+      setError('Post title is required!');
       return;
     }
 
-    setIsLoading(true); // Set loading true before Supabase call
+    setIsLoading(true);
 
-    // Prepare data for Supabase - keys should match your table column names
+    // Prepare data object for Supabase, including the author_id
     const postData = {
       title: title.trim(),
-      content: content.trim() || null, // Send null if content is empty
-      image_url: imageUrl.trim() || null, // Send null if image URL is empty
-      // 'upvotes' defaults to 0 in the DB
-      // 'id' and 'created_at' are handled by the DB
+      content: content.trim() || null, // Use null if empty
+      image_url: imageUrl.trim() || null, // Use null if empty
+      author_id: user.id // Assign the logged-in user's ID
+      // upvotes defaults to 0 in the DB
+      // created_at defaults to now() in the DB
     };
 
     try {
-      // 👇 Call Supabase insert
+      // Attempt to insert the post data into the 'posts' table
       const { data, error: insertError } = await supabase
-        .from('posts') // Your table name
+        .from('posts')
         .insert([postData])
-        .select(); // .select() is optional, returns the inserted data
+        .select(); // .select() is optional here, returns the inserted row
 
+      // If Supabase returns an error, throw it to the catch block
       if (insertError) {
-        // Throwing the error will trigger the catch block
         throw insertError;
       }
 
       // Success!
-      console.log("Post inserted:", data); // Log the inserted data (optional)
       alert('Post created successfully!');
 
-      // Clear the form
+      // Clear the form fields
       setTitle('');
       setContent('');
       setImageUrl('');
 
-      // Redirect to home page
+      // Navigate back to the home page (or maybe to the new post's page later)
       navigate('/');
 
     } catch (error) {
-      console.error('Error creating post:', error.message);
-      setError(`Failed to create post: ${error.message}`); // Set error state
-      alert(`Error: ${error.message}`); // Simple alert for now
+      // Handle errors during the insert operation
+      console.error('Error creating post:', error);
+      let friendlyErrorMessage = `Failed to create post: ${error.message}`;
+      // Check for specific errors like Foreign Key violation
+      if (error.message.includes('violates foreign key constraint')) {
+           friendlyErrorMessage = 'Failed to create post. Could not verify author information.';
+           // Log the problematic ID for debugging
+           console.error('FK Violation likely due to user ID:', user?.id);
+      }
+      setError(friendlyErrorMessage);
+      alert(`Error: ${friendlyErrorMessage}`); // Show alert for immediate feedback
 
     } finally {
-      // 👇 Set loading false whether it succeeded or failed
+      // Always set loading back to false after the operation completes
       setIsLoading(false);
     }
   };
 
+  // JSX for the form
   return (
     <div className="container create-post-page">
       <h2>Create New Post</h2>
 
-      {/* Optional: Display error messages */}
-      {error && <p className="error-message" style={{color: 'red', marginBottom: '1rem'}}>{error}</p>}
+      {/* Display error message if one exists */}
+      {error && <p className="error-message">{error}</p>}
 
       <form onSubmit={handleSubmit} className="create-post-form">
-        {/* --- Title Input (no changes needed) --- */}
         <div className="form-group">
           <label htmlFor="post-title">Title <span className="required">*</span></label>
           <input
@@ -86,11 +111,10 @@ function CreatePostPage() {
             onChange={(e) => setTitle(e.target.value)}
             required
             aria-required="true"
-            disabled={isLoading} // Disable input while loading
+            disabled={isLoading}
           />
         </div>
 
-        {/* --- Content Input (no changes needed) --- */}
         <div className="form-group">
           <label htmlFor="post-content">Content</label>
           <textarea
@@ -98,11 +122,10 @@ function CreatePostPage() {
             value={content}
             onChange={(e) => setContent(e.target.value)}
             rows="6"
-            disabled={isLoading} // Disable input while loading
+            disabled={isLoading}
           />
         </div>
 
-        {/* --- Image URL Input (no changes needed) --- */}
         <div className="form-group">
           <label htmlFor="post-image-url">Image URL (Optional)</label>
           <input
@@ -111,11 +134,10 @@ function CreatePostPage() {
             value={imageUrl}
             onChange={(e) => setImageUrl(e.target.value)}
             placeholder="https://example.com/image.png"
-            disabled={isLoading} // Disable input while loading
+            disabled={isLoading}
           />
         </div>
 
-        {/* 👇 Update Button to show loading state and disable */}
         <button type="submit" className="submit-button" disabled={isLoading}>
           {isLoading ? 'Creating...' : 'Create Post'}
         </button>

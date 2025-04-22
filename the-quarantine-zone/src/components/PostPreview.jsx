@@ -1,24 +1,36 @@
+// src/components/PostPreview.jsx
 import React from 'react';
 import { Link } from 'react-router-dom';
-import './PostPreview.css'; // Create this CSS file
+import './PostPreview.css'; // Make sure this CSS file exists and is linked
 
-// Note: The link `to={'/post/${id}'}` assumes your route for single posts will be like this.
-function PostPreview({ id, title, upvotes, time, author }) {
+// 👇 Accept 'author_username' as a prop (matches the field from the view)
+function PostPreview({ id, title, upvotes, time, author_username }) {
+
+  // Basic check for missing essential props
+  if (!id || !title) {
+    console.warn("PostPreview missing required prop: id or title");
+    return null;
+  }
+
   return (
     <article className="post-preview">
+      {/* Metadata section */}
       <div className="post-meta">
         {/* Display time */}
-        <span className="post-time">{time}</span>
-         {/* Optionally display author later: <span className="post-author">by {author}</span> */}
+        {time && <span className="post-time">{time}</span>}
+        {/* 👇 Display author username using the updated prop name */}
+        {author_username && <span className="post-author"> by {author_username}</span>}
       </div>
+
+      {/* Post Title (Link) */}
       <h2 className="post-title">
-        {/* Make the title a link to the future post detail page */}
         <Link to={`/post/${id}`}>{title}</Link>
       </h2>
+
+      {/* Footer section */}
       <div className="post-footer">
-          {/* Display upvotes */}
-         <span className="post-upvotes">{upvotes} upvotes</span>
-         {/* Maybe add comment count later? */}
+         {/* Display upvotes */}
+         <span className="post-upvotes">{upvotes ?? 0} upvotes</span>
       </div>
     </article>
   );
