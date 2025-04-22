@@ -46,9 +46,10 @@ function SignUpPage() {
          // This case happens if email confirmation is required but not done yet
          setError("Signup successful, but please check your email to confirm (though confirmation is likely disabled for dev).");
          alert("Signup successful!"); // Adjust message based on confirmation status
-         navigate('/signin'); 
+         navigate('/'); 
       } else if (data.user) {
           alert('Sign up successful!');
+          navigate('/');
       } else {
            setError("An unknown error occurred during sign up."); // Should not happen often
       }
