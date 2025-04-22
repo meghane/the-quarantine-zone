@@ -1,72 +1,117 @@
+// src/pages/HomePage.jsx
 import React, { useState, useEffect } from 'react';
 import SortControls from '../components/SortControls';
 import PostPreview from '../components/PostPreview';
-import './HomePage.css'; // Create this CSS file
+import { supabase } from '../supabaseClient'; // 👈 Import Supabase client
+import './HomePage.css';
 
-// --- Placeholder Data ---
-// In a real app, you'd fetch this from an API
-const dummyPosts = [
-  { id: 1, title: "Who is your favorite Founding Father?", upvotes: 3, createdAt: new Date(Date.now() - 21 * 60 * 60 * 1000), author: "User1" },
-  { id: 2, title: "I'm in love with the Holy Roman Empire", upvotes: 23, createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), author: "User2" },
-  { id: 3, title: "Was Caesar overrated?", upvotes: 11, createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), author: "User3" },
-  { id: 4, title: "Just finished TLOU Part II again...", upvotes: 55, createdAt: new Date(Date.now() - 1 * 60 * 60 * 1000), author: "User4" },
-  { id: 5, title: "Season 2 predictions?", upvotes: 42, createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), author: "User5" },
-];
-// --- End Placeholder Data ---
+// --- REMOVE Placeholder Data ---
+// const dummyPosts = [ ... ]; // Delete this whole array
+// --- End REMOVE ---
 
-
-// Helper function for relative time (simple version)
-function timeAgo(date) {
-    const seconds = Math.floor((new Date() - date) / 1000);
-    let interval = seconds / 31536000;
-    if (interval > 1) return Math.floor(interval) + " years ago";
-    interval = seconds / 2592000;
-    if (interval > 1) return Math.floor(interval) + " months ago";
-    interval = seconds / 86400;
-    if (interval > 1) return Math.floor(interval) + " days ago";
-    interval = seconds / 3600;
-    if (interval > 1) return Math.floor(interval) + " hours ago";
-    interval = seconds / 60;
-    if (interval > 1) return Math.floor(interval) + " minutes ago";
-    return Math.floor(seconds) + " seconds ago";
+// Helper function for relative time (keep this or adapt as needed)
+function timeAgo(dateString) {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  const seconds = Math.floor((new Date() - date) / 1000);
+  let interval = seconds / 31536000;
+  if (interval > 1) return Math.floor(interval) + " years ago";
+  interval = seconds / 2592000;
+  if (interval > 1) return Math.floor(interval) + " months ago";
+  interval = seconds / 86400;
+  // Handle potential future dates slightly more gracefully
+  if (interval > 1 || interval < -1) return Math.floor(Math.abs(interval)) + " days ago";
+  interval = seconds / 3600;
+   if (interval > 1 || interval < -1) return Math.floor(Math.abs(interval)) + " hours ago";
+  interval = seconds / 60;
+   if (interval > 1 || interval < -1) return Math.floor(Math.abs(interval)) + " minutes ago";
+  return Math.floor(Math.abs(seconds)) + " seconds ago";
 }
 
 
 function HomePage() {
   const [posts, setPosts] = useState([]);
   const [sortBy, setSortBy] = useState('newest'); // 'newest' or 'popular'
+  const [isLoading, setIsLoading] = useState(true); // 👈 Add loading state, start as true
+  const [error, setError] = useState(null); // 👈 Add error state
 
-  // Simulate fetching posts and sort initially
+  // 👇 useEffect to fetch posts from Supabase
   useEffect(() => {
-    let sortedPosts = [...dummyPosts]; // Create a copy
-    if (sortBy === 'newest') {
-      sortedPosts.sort((a, b) => b.createdAt - a.createdAt);
-    } else if (sortBy === 'popular') {
-      sortedPosts.sort((a, b) => b.upvotes - a.upvotes);
-    }
-    setPosts(sortedPosts);
-  }, [sortBy]); // Re-run useEffect when sortBy changes
+    const fetchPosts = async () => {
+      setIsLoading(true); // Start loading
+      setError(null); // Clear previous errors
+
+      try {
+        // Base query
+        let query = supabase
+          .from('posts')
+          .select('*'); // Select all columns
+
+        // Apply sorting based on sortBy state
+        if (sortBy === 'newest') {
+          query = query.order('created_at', { ascending: false });
+        } else if (sortBy === 'popular') {
+          query = query.order('upvotes', { ascending: false });
+          // Optional: Add secondary sort by date for posts with same upvotes
+          query = query.order('created_at', { ascending: false });
+        }
+
+        // Execute query
+        const { data, error: fetchError } = await query;
+
+        if (fetchError) {
+          throw fetchError; // Throw error to be caught below
+        }
+
+        // Set fetched data to state
+        setPosts(data || []); // Use empty array if data is null
+
+      } catch (error) {
+        console.error("Error fetching posts:", error.message);
+        setError(`Failed to fetch posts: ${error.message}`);
+        setPosts([]); // Clear posts on error
+      } finally {
+        setIsLoading(false); // Stop loading
+      }
+    };
+
+    fetchPosts(); // Call the async function
+
+  }, [sortBy]); // 👈 Re-run effect when sortBy changes
+
+  // --- Render Logic ---
+  let content;
+  if (isLoading) {
+    content = <p className="loading-message">Loading posts...</p>;
+  } else if (error) {
+    content = <p className="error-message">{error}</p>;
+  } else if (posts.length === 0) {
+    content = <p className="no-posts-message">No posts yet! Be the first to create one.</p>;
+  } else {
+    content = (
+      <section className="post-feed">
+        {posts.map(post => (
+          <PostPreview
+            key={post.id}
+            id={post.id}
+            title={post.title}
+            upvotes={post.upvotes}
+            // Use the timeAgo function with the 'created_at' field from Supabase
+            time={timeAgo(post.created_at)}
+            // author={post.author_id} // If you add author later
+          />
+        ))}
+      </section>
+    );
+  }
+
 
   return (
     <div className="container home-page">
-      <SortControls currentSort={sortBy} onSortChange={setSortBy} />
-      <section className="post-feed">
-        {posts.length > 0 ? (
-          posts.map(post => (
-            <PostPreview
-              key={post.id}
-              id={post.id}
-              title={post.title}
-              upvotes={post.upvotes}
-              // Format the date using the helper
-              time={timeAgo(post.createdAt)}
-              author={post.author} // Assuming you might want author later
-            />
-          ))
-        ) : (
-          <p>No posts yet!</p> // Message if no posts
-        )}
-      </section>
+      {/* Render SortControls only if not loading and no error */}
+      {!isLoading && !error && <SortControls currentSort={sortBy} onSortChange={setSortBy} />}
+      {/* Render the determined content */}
+      {content}
     </div>
   );
 }
