@@ -1,0 +1,13 @@
+.sort-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem; /* Space between "Order by:" and buttons */
+    flex-wrap: wrap; /* Allow wrapping */
+  }
+  
+  .sort-controls span {
+    margin-right: 0.5rem; /* Space after "Order by:" */
+    font-weight: bold;
+  }
+  
+  /* Button styles are mostly handled globally or by .active class in index.css */

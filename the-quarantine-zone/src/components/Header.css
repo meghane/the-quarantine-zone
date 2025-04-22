@@ -1,0 +1,74 @@
+.app-header {
+    background-color: #008080; /* Tealish color from mockup */
+    padding: 1rem 0;
+    color: white;
+  }
+  
+  .header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+  }
+  
+  .site-title a {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: white;
+  }
+  
+  .search-form {
+    display: flex;
+    align-items: center;
+  }
+  
+  .search-form input[type="search"] {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px 0 0 4px; /* Rounded left corners */
+    min-width: 200px; /* Adjust as needed */
+  }
+  
+  .search-form button {
+    padding: 8px 12px;
+    border-radius: 0 4px 4px 0; /* Rounded right corners */
+    background-color: #f0f0f0; /* Light background for button */
+    color: #333;
+    border: 1px solid #ccc;
+    border-left: none; /* Avoid double border */
+  }
+  
+  .main-nav ul {
+    display: flex;
+    gap: 1.5rem; /* Spacing between nav items */
+  }
+  
+  .main-nav a {
+    color: white;
+    font-size: 1rem;
+    padding: 5px 0; /* Add some clickable area */
+  }
+  
+  .main-nav a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Basic responsive considerations */
+  @media (max-width: 768px) {
+    .header-container {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    .search-form {
+       order: 3; /* Move search below title and nav */
+       width: 100%; /* Make search take full width */
+    }
+     .search-form input[type="search"]{
+        flex-grow: 1; /* Allow input to grow */
+     }
+  
+    .main-nav {
+      order: 2; /* Move nav below title */
+    }
+  }

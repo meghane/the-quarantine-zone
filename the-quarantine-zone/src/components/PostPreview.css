@@ -1,0 +1,45 @@
+.post-preview {
+    background-color: #ffffff; /* White background for card */
+    border: 1px solid #e0e0e0; /* Subtle border */
+    padding: 1rem 1.5rem;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+    transition: box-shadow 0.2s ease-in-out;
+  }
+  
+  .post-preview:hover {
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Slightly larger shadow on hover */
+  }
+  
+  .post-meta {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 0.5rem;
+  }
+  
+  .post-title {
+    font-size: 1.3rem;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+  }
+  
+  .post-title a {
+      color: #333; /* Or your primary link color */
+  }
+  
+  .post-title a:hover {
+      text-decoration: underline;
+      color: #005050; /* Darker teal on hover */
+  }
+  
+  
+  .post-footer {
+      font-size: 0.9rem;
+      color: #555;
+  }
+  
+  .post-upvotes {
+   font-weight: bold;
+   /* Add spacing if other elements are added to the footer */
+  }
+  
