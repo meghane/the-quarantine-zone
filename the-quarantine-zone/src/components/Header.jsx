@@ -1,12 +1,26 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import './Header.css'; // Create this CSS file for Header-specific styles
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext'; // 👈 Import useAuth
+import './Header.css';
 
 function Header() {
+  const { user, profile, signOut } = useAuth(); // 👈 Get user, profile and signOut from context
+  const navigate = useNavigate();
+
   const handleSearch = (event) => {
     event.preventDefault();
-    // Add search logic here later
     console.log("Searching for:", event.target.elements.search.value);
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      // Redirect to home page after sign out
+      navigate('/');
+    } catch (error) {
+      console.error("Error signing out:", error);
+      // Handle error appropriately
+    }
   };
 
   return (
@@ -15,14 +29,31 @@ function Header() {
         <h1 className="site-title">
           <Link to="/">The Quarantine Zone</Link>
         </h1>
+        {/* Keep Search Form */}
         <form className="search-form" onSubmit={handleSearch}>
           <input type="search" name="search" placeholder="Search Posts..." aria-label="Search Posts"/>
           <button type="submit">Search</button>
         </form>
+
+        {/* 👇 Update Navigation based on auth state */}
         <nav className="main-nav">
           <ul>
             <li><Link to="/">Home</Link></li>
-            <li><Link to="/create">Create New Post</Link></li> {/* Link to future page */}
+            {user ? (
+              // Logged In Links
+              <>
+                <li><Link to="/create">Create New Post</Link></li>
+                {/* Display Username - using profile state which gets username from metadata */}
+                {profile?.username && <li className="nav-username">Hi, {profile.username}!</li>}
+                <li><button onClick={handleSignOut} className="nav-button">Sign Out</button></li>
+              </>
+            ) : (
+              // Logged Out Links
+              <>
+                <li><Link to="/signin">Sign In</Link></li>
+                <li><Link to="/signup">Sign Up</Link></li>
+              </>
+            )}
           </ul>
         </nav>
       </div>
