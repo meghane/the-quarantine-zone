@@ -1,49 +1,58 @@
 // src/App.jsx
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
+
+// Import Layout Components
 import Header from './components/Header';
+import ProtectedRoute from './components/ProtectedRoute'; // Keep this for route protection
+
+// Import Page Components
 import HomePage from './pages/HomePage';
 import CreatePostPage from './pages/CreatePostPage';
 import SignUpPage from './pages/SignUpPage';
 import SignInPage from './pages/SignInPage';
-import { Toaster } from 'react-hot-toast'; // 👈 1. Import Toaster
+// Import other pages later (e.g., PostDetailPage)
 
-// Import other pages later
+// We are removing the react-hot-toast imports and component
 
 function App() {
+  // If you plan to manage global state like posts list here later,
+  // you would add useState for that here.
+  // const [posts, setPosts] = useState([]);
+  // const addPost = (newPost) => { /* logic to add post */ };
+
   return (
     <>
+      {/* Header appears on all pages */}
       <Header />
-      <Toaster // 👈 2. Render the Toaster component
-        position="top-center" // You can customize position, duration etc.
-        reverseOrder={false}
-        toastOptions={{
-            // Define default options
-            duration: 8000, // Show for 3 seconds
-            style: {
-              background: '#363636', // Example dark background
-              color: '#fff',
-            },
-             // Default options for specific types
-            success: {
-              duration: 3000,
-              theme: {
-                primary: 'green',
-                secondary: 'black',
-              },
-            },
-        }}
-       />
+
+      {/* Main content area where routes are rendered */}
       <main>
         <Routes>
+          {/* Public Routes */}
           <Route path="/" element={<HomePage />} />
-          <Route path="/create" element={<CreatePostPage />} />
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/signin" element={<SignInPage />} />
-          {/* <Route path="/post/:postId" element={<PostDetailPage />} /> */}
+          {/* <Route path="/post/:postId" element={<PostDetailPage />} /> */} {/* Add later */}
+
+          {/* Protected Routes */}
+          <Route
+            path="/create"
+            element={
+              <ProtectedRoute>
+                {/* Pass necessary props if CreatePostPage needs them, e.g., addPost function */}
+                <CreatePostPage /* addPost={addPost} */ />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Catch-all for Not Found pages (Optional) */}
           {/* <Route path="*" element={<div>Page Not Found</div>} /> */}
         </Routes>
       </main>
+
+      {/* Optional Footer could go here */}
+      {/* <footer> <p>&copy; 2025 The Quarantine Zone</p> </footer> */}
     </>
   );
 }
