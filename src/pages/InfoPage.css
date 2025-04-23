@@ -1,0 +1,75 @@
+/* src/pages/InfoPage.css */
+.info-page {
+    padding: 2rem 1rem; /* Add padding around the content */
+    max-width: 800px; /* Limit width for readability */
+    margin: 1rem auto; /* Add top/bottom margin and center horizontally */
+    background-color: #fff; /* Optional: background card */
+    border: 1px solid #eee; /* Optional: border */
+    border-radius: 8px; /* Optional: rounded corners */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* Optional: shadow */
+    line-height: 1.7; /* Improve text readability */
+    color: #333; /* Default text color */
+  }
+  
+  .info-page h1 {
+    text-align: center;
+    margin-bottom: 0.5rem;
+    font-size: 2.2rem;
+    /* font-family: 'Road Rage', sans-serif; */ /* Optional theme font */
+  }
+  
+  .info-page .tagline {
+      text-align: center;
+      margin-bottom: 2.5rem;
+      font-style: italic;
+      color: #555;
+  }
+  
+  .info-section {
+    margin-bottom: 2.5rem; /* Space between sections */
+  }
+  
+  .info-section h2 {
+    font-size: 1.6rem;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #eee; /* Separator */
+    padding-bottom: 0.5rem;
+    color: #006666; /* Use theme accent color */
+  }
+  
+  .info-section p,
+  .info-section ul {
+    margin-bottom: 1rem;
+    color: #444;
+  }
+   .info-section p:last-child,
+   .info-section ul:last-child {
+       margin-bottom: 0;
+   }
+  
+  
+  .info-section ul {
+      list-style: disc; /* Use standard bullets */
+      margin-left: 1.5rem; /* Indent list */
+      padding-left: 0.5rem;
+  }
+  .info-section ul li {
+      margin-bottom: 0.5rem; /* Space between list items */
+  }
+  .info-section ul li strong,
+   .info-section ul li b {
+      color: #333; /* Make bolded text slightly darker */
+   }
+  
+  
+  .info-footer {
+      margin-top: 3rem;
+      padding-top: 1rem;
+      border-top: 1px solid #eee;
+      text-align: center;
+      font-size: 0.85rem;
+      color: #777;
+  }
+  .info-footer p {
+      margin-bottom: 0.25rem;
+  }

@@ -61,11 +61,6 @@
   border-left: none;
 }
 
-/* Navigation Styles */
-.main-nav {
-  /* Remove margin-left: auto if it was added */
-}
-
 .main-nav ul {
   display: flex;
   align-items: center;

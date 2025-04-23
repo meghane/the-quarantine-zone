@@ -13,8 +13,8 @@ import SignUpPage from './pages/SignUpPage';
 import SignInPage from './pages/SignInPage';
 import PostDetailPage from './pages/PostDetailPage';
 import EditPostPage from './pages/EditPostPage';
+import InfoPage from './pages/InfoPage';
 
-// We are removing the react-hot-toast imports and component
 
 function App() {
   // If you plan to manage global state like posts list here later,
@@ -35,6 +35,8 @@ function App() {
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/signin" element={<SignInPage />} />
           <Route path="/post/:postId" element={<PostDetailPage />} />
+          <Route path="/info" element={<InfoPage />} />
+
 
           {/* Protected Routes */}
           <Route
