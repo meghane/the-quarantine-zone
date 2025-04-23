@@ -12,7 +12,7 @@ import CreatePostPage from './pages/CreatePostPage';
 import SignUpPage from './pages/SignUpPage';
 import SignInPage from './pages/SignInPage';
 import PostDetailPage from './pages/PostDetailPage';
-// Import other pages later (e.g., PostDetailPage)
+import EditPostPage from './pages/EditPostPage';
 
 // We are removing the react-hot-toast imports and component
 
@@ -43,6 +43,14 @@ function App() {
               <ProtectedRoute>
                 {/* Pass necessary props if CreatePostPage needs them, e.g., addPost function */}
                 <CreatePostPage /* addPost={addPost} */ />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/post/:postId/edit"
+            element={
+              <ProtectedRoute> {/* Ensure only logged-in users can access edit page */}
+                <EditPostPage />
               </ProtectedRoute>
             }
           />

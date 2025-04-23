@@ -153,4 +153,37 @@
 }
 
 
-/* ... rest of styles ... */
+/* Add to src/pages/PostDetailPage.css */
+.edit-button,
+.delete-button {
+    background: none;
+    border: 1px solid #ccc;
+    padding: 4px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+}
+
+.edit-button {
+    color: #007bff; /* Blue */
+    border-color: #007bff;
+    text-decoration: none; /* If using Link */
+    display: inline-block; /* If using Link */
+    line-height: normal; /* Adjust alignment if using Link */
+}
+.edit-button:hover {
+    background-color: #e7f3ff;
+}
+
+.delete-button {
+    color: #d9534f; /* Red */
+    border-color: #d9534f;
+}
+.delete-button:hover:not(:disabled) {
+    background-color: #f2dede;
+}
+.delete-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}

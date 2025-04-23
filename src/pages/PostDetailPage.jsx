@@ -1,24 +1,33 @@
 // src/pages/PostDetailPage.jsx
 import React, { useState, useEffect, useCallback } from 'react';
-import { useParams, Link, useNavigate, useLocation } from 'react-router-dom'; // Added useLocation
+import { useParams, Link, useNavigate, useLocation } from 'react-router-dom'; // useParams to get ID from URL, Link for Edit, useNavigate for redirects, useLocation for signin redirect state
 import { supabase } from '../supabaseClient'; // Adjust path if needed
-import { useAuth } from '../context/AuthContext'; // Adjust path if needed
-import './PostDetailPage.css'; // Make sure this CSS file exists
+import { useAuth } from '../context/AuthContext'; // To check logged-in user
+import './PostDetailPage.css'; // Make sure this CSS file exists and is linked
 
 // Helper function for relative time formatting
 function timeAgo(dateString) {
   if (!dateString) return '';
   try {
       const date = new Date(dateString);
-      if (isNaN(date.getTime())) return 'Invalid date';
+      // Check if date is valid before calculating
+      if (isNaN(date.getTime())) {
+          return 'Invalid date';
+      }
       const seconds = Math.floor((new Date() - date) / 1000);
-      let interval = seconds / 31536000; if (interval > 1) return Math.floor(interval) + " years ago";
-      interval = seconds / 2592000; if (interval > 1) return Math.floor(interval) + " months ago";
-      interval = seconds / 86400; if (interval > 1) return Math.floor(interval) + " days ago";
-      interval = seconds / 3600; if (interval > 1) return Math.floor(interval) + " hours ago";
-      interval = seconds / 60; if (interval > 1) return Math.floor(interval) + " minutes ago";
+      let interval = seconds / 31536000; // years
+      if (interval > 1) return Math.floor(interval) + " years ago";
+      interval = seconds / 2592000; // months
+      if (interval > 1) return Math.floor(interval) + " months ago";
+      interval = seconds / 86400; // days
+      if (interval > 1) return Math.floor(interval) + " days ago";
+      interval = seconds / 3600; // hours
+      if (interval > 1) return Math.floor(interval) + " hours ago";
+      interval = seconds / 60; // minutes
+      if (interval > 1) return Math.floor(interval) + " minutes ago";
+      // Handle future posts or posts created exactly now
       if (seconds < 0) return `in ${Math.floor(Math.abs(seconds))} seconds`;
-      return Math.max(0, Math.floor(seconds)) + " seconds ago";
+      return Math.max(0, Math.floor(seconds)) + " seconds ago"; // Ensure non-negative seconds
   } catch (e) {
       console.error("Error formatting date:", dateString, e);
       return 'Invalid date';
@@ -26,59 +35,65 @@ function timeAgo(dateString) {
 }
 
 function PostDetailPage() {
-  const { postId } = useParams(); // Get post ID from URL parameter
+  const { postId } = useParams(); // Get the 'postId' parameter from the URL
   const { user } = useAuth(); // Get current logged-in user state
-  const navigate = useNavigate(); // Hook for navigation
-  const location = useLocation(); // Hook to get current location (for sign-in redirect)
+  const navigate = useNavigate(); // Hook for navigation actions
+  const location = useLocation(); // Hook to get current location (used for sign-in redirect)
 
-  const [post, setPost] = useState(null); // State for the post data
-  const [loading, setLoading] = useState(true); // State for loading indicator
-  const [error, setError] = useState(null); // State for storing errors
+  // State for the post data itself
+  const [post, setPost] = useState(null);
+  // State for loading the initial post data
+  const [loading, setLoading] = useState(true);
+  // State for storing general or fetch errors
+  const [error, setError] = useState(null);
 
-  const [hasUpvoted, setHasUpvoted] = useState(false); // State tracking if current user has upvoted
-  const [isVoteLoading, setIsVoteLoading] = useState(false); // State for loading during vote action
+  // State specifically for tracking the current user's upvote status on this post
+  const [hasUpvoted, setHasUpvoted] = useState(false);
+  // State for loading indicator during the upvote/downvote action
+  const [isVoteLoading, setIsVoteLoading] = useState(false);
+  // State for loading indicator during the delete action
+  const [isDeleting, setIsDeleting] = useState(false);
+
 
   // Function to fetch post details and user's vote status
-  // Wrapped in useCallback to prevent re-creating function on every render unless dependencies change
+  // Wrapped in useCallback to stabilize the function reference based on dependencies
   const fetchPost = useCallback(async () => {
       // Reset states before fetching
       setLoading(true);
       setError(null);
       setPost(null);
-      setHasUpvoted(false); // Reset vote status
+      setHasUpvoted(false);
 
       try {
-          // Fetch post data from the view (includes author username)
+          // Fetch post data using the view to include author username
           const { data: postData, error: postError } = await supabase
               .from('posts_with_author_username') // Use the view
               .select('*')
-              .eq('id', postId) // Filter by the post ID
-              .single(); // Expect only one result
+              .eq('id', postId) // Filter by the post ID from the URL
+              .single(); // Expect only one result (or null/error)
 
           // Handle errors during post fetch
           if (postError) {
               if (postError.code === 'PGRST116') throw new Error("Post not found."); // Specific error for not found
               else throw postError; // Other Supabase/DB errors
           }
-
-          // If no data found (should be caught by .single() error, but good practice)
-          if (!postData) throw new Error("Post not found.");
+          if (!postData) throw new Error("Post not found."); // Handle null data case
 
           // Set the fetched post data to state
           setPost(postData);
 
-          // Check if the current logged-in user has upvoted this post
-          if (user) { // Only check if a user is logged in
+          // If a user is logged in, check their upvote status for this post
+          if (user) {
               const { data: voteData, error: voteError, count } = await supabase
-                  .from('post_upvotes') // Check the upvotes table
-                  .select('*', { count: 'exact', head: true }) // We only need the count
-                  .match({ post_id: postId, user_id: user.id }); // Match post and user ID
+                  .from('post_upvotes')
+                  .select('*', { count: 'exact', head: true }) // Only need to know if > 0 exists
+                  .match({ post_id: postId, user_id: user.id }); // Check for row matching post and user
 
               if (voteError) {
-                  // Log non-critical error if vote check fails, but don't block page load
+                  // Log non-critical error but allow page to load
                   console.warn("Could not check vote status:", voteError.message);
               } else if (count > 0) {
-                  // If count > 0, the user has an upvote record for this post
+                  // User has upvoted this post
                   setHasUpvoted(true);
               }
           }
@@ -95,97 +110,112 @@ function PostDetailPage() {
   // useEffect hook to call fetchPost when component mounts or dependencies change
   useEffect(() => {
       if (postId) {
-          fetchPost();
+          fetchPost(); // Fetch the post data
       } else {
-          // Handle case where postId is missing in URL (shouldn't happen with correct routing)
+          // Handle case where postId is missing in URL
           setError("No post ID provided.");
           setLoading(false);
       }
-  }, [postId, fetchPost]); // Use the memoized fetchPost function here
+  }, [postId, fetchPost]); // Use the memoized fetchPost function
 
-  // Async function to handle the upvote button click
+  // --- Action Handlers ---
+
+  // Handle Upvote/Downvote Click
   const handleUpvote = async () => {
-      // 1. Check if user is logged in
       if (!user) {
           alert("Please sign in to upvote posts!");
-          // Redirect to signin page, passing the current page as 'from' state
-          // so user can be redirected back after signing in
           navigate('/signin', { state: { from: location } });
           return;
       }
-
-      // 2. Prevent multiple clicks while an operation is in progress
-      if (isVoteLoading) return;
+      if (isVoteLoading) return; // Prevent double clicks
       setIsVoteLoading(true);
-      setError(null); // Clear previous voting errors
+      setError(null);
 
       try {
-          if (hasUpvoted) {
-              // --- User is REMOVING their upvote ---
-              // Delete the row from post_upvotes table
+          if (hasUpvoted) { // --- REMOVING VOTE ---
               const { error: deleteError } = await supabase
                   .from('post_upvotes')
                   .delete()
                   .match({ post_id: postId, user_id: user.id });
-
-              if (deleteError) throw deleteError; // Handle delete error
-
-              // Update UI optimistically (database trigger handles actual count)
+              if (deleteError) throw deleteError;
               setHasUpvoted(false);
-              setPost(currentPost => ({ ...currentPost, upvotes: Math.max(0, currentPost.upvotes - 1) }));
-
-          } else {
-              // --- User is ADDING their upvote ---
-              // Insert a new row into post_upvotes table
+              setPost(p => ({ ...p, upvotes: Math.max(0, p.upvotes - 1) })); // Optimistic UI update
+          } else { // --- ADDING VOTE ---
               const { error: insertError } = await supabase
                   .from('post_upvotes')
                   .insert({ post_id: postId, user_id: user.id });
-
-              // Handle potential race condition if vote already exists (e.g., double click)
-              // Supabase error code 23505 = unique_violation
-              if (insertError && insertError.code === '23505') {
-                  console.warn("Upvote already exists, likely due to race condition. Syncing UI.");
-                  setHasUpvoted(true); // Correct UI state if it was out of sync
-              } else if (insertError) {
-                  throw insertError; // Throw other insert errors
-              } else {
-                  // Update UI optimistically after successful insert
+              if (insertError && insertError.code === '23505') { // Handle potential unique violation on rapid clicks
+                  console.warn("Upvote already exists error (23505). Syncing UI.");
                   setHasUpvoted(true);
-                  setPost(currentPost => ({ ...currentPost, upvotes: currentPost.upvotes + 1 }));
+              } else if (insertError) {
+                  throw insertError;
+              } else {
+                  setHasUpvoted(true);
+                  setPost(p => ({ ...p, upvotes: p.upvotes + 1 })); // Optimistic UI update
               }
           }
       } catch (error) {
-          // Handle errors during the upvote/downvote operation
           console.error("Error handling upvote:", error.message);
           setError(`Vote failed: ${error.message}`);
-          // Consider re-fetching post data here to ensure UI consistency if needed
-          // fetchPost();
+          // Consider re-fetching post to correct optimistic update if needed: fetchPost();
       } finally {
-          // Always set vote loading state to false
           setIsVoteLoading(false);
       }
   };
 
+  // Handle Post Deletion Click
+  const handleDelete = async () => {
+      if (!window.confirm("Are you sure you want to delete this post? This cannot be undone.")) return;
+      if (!user || user.id !== post?.author_id) { // Check ownership again just in case
+          alert("You are not authorized to delete this post.");
+          return;
+      }
+      if (isDeleting) return; // Prevent double clicks
+
+      setIsDeleting(true);
+      setError(null);
+
+      try {
+          // Delete from posts table matching ID (RLS policy enforces ownership)
+          const { error: deleteError } = await supabase
+              .from('posts')
+              .delete()
+              .match({ id: postId });
+
+          if (deleteError) throw deleteError;
+
+          alert("Post deleted successfully.");
+          navigate('/'); // Navigate back to home page after deletion
+
+      } catch (error) {
+          console.error("Error deleting post:", error);
+          setError(`Failed to delete post: ${error.message}`);
+          alert(`Error: ${error.message}`); // Show alert for deletion error
+      } finally {
+          setIsDeleting(false);
+      }
+  };
+
+
   // --- Render Logic ---
-  // Show loading state
   if (loading) {
       return <div className="container post-detail-page"><p style={{textAlign: 'center', margin: '2rem'}}>Loading post...</p></div>;
   }
 
-  // Show error if post failed to load
+  // Show error only if the post failed to load initially
   if (error && !post) {
       return <div className="container post-detail-page"><p className="error-message" style={{color: 'red', textAlign: 'center', margin: '2rem'}}>Error: {error}</p></div>;
   }
 
-  // Show "Not Found" if no post data exists (should usually be caught by error handling)
+  // Handle case where post is simply not found after loading
   if (!post) {
       return <div className="container post-detail-page"><p style={{textAlign: 'center', margin: '2rem'}}>Post not found.</p></div>;
   }
 
-  // --- Render the Post Details ---
+  // --- Render the Full Post Details ---
   return (
       <div className="container post-detail-page">
-          {/* Display vote-specific errors if they occur */}
+          {/* Display non-critical errors (like vote errors) above the post */}
           {error && <p className="error-message" style={{textAlign:'center', color:'red', marginBottom: '1rem'}}>{error}</p>}
 
           <article className="post-full">
@@ -196,42 +226,58 @@ function PostDetailPage() {
                       <span> by {post.author_username ?? 'Unknown User'}</span>
                       <span className="separator">|</span>
                       <span className="upvote-count">{post.upvotes ?? 0} upvotes</span>
-                      {/* Actions container */}
+
+                      {/* Action Buttons Container */}
                       <div className="post-actions">
                           {/* Upvote Button */}
                           <button
                               onClick={handleUpvote}
-                              disabled={isVoteLoading || !user} // Disable if processing or not logged in
-                              className={`upvote-button ${hasUpvoted ? 'upvoted' : ''}`} // Conditional class for styling
+                              disabled={isVoteLoading || !user}
+                              className={`upvote-button ${hasUpvoted ? 'upvoted' : ''}`}
                               title={!user ? "Sign in to upvote" : (hasUpvoted ? "Remove upvote" : "Upvote")}
-                              aria-pressed={hasUpvoted} // Accessibility state
+                              aria-pressed={hasUpvoted}
                           >
-                              {/* You can replace text/arrows with SVG icons */}
                               <span className="arrow">{hasUpvoted ? '▲' : '△'}</span> Upvote
                           </button>
-                          {/* Placeholder for Edit/Delete Buttons */}
-                          {/* {user && user.id === post.author_id && (
+
+                          {/* Conditional Edit/Delete Buttons for Author */}
+                          {user && user.id === post.author_id && (
                               <>
-                                  <button className="edit-button">Edit</button>
-                                  <button className="delete-button">Delete</button>
+                                  {/* Link to the Edit Page */}
+                                  <Link to={`/post/${postId}/edit`} className="edit-button">
+                                      Edit
+                                  </Link>
+
+                                  {/* Delete Button */}
+                                  <button
+                                      onClick={handleDelete}
+                                      className="delete-button"
+                                      disabled={isDeleting}
+                                      title="Delete this post"
+                                  >
+                                      {isDeleting ? 'Deleting...' : 'Delete'}
+                                  </button>
                               </>
-                          )} */}
-                      </div>
-                  </div>
+                          )}
+                      </div> {/* End post-actions */}
+                  </div> {/* End post-meta */}
               </header>
 
-              {/* Display post image if URL exists */}
+              {/* Post Image */}
               {post.image_url && (
                   <div className="post-image-container">
                       <img src={post.image_url} alt={post.title || 'Post image'} className="post-image"/>
                   </div>
               )}
 
-              {/* Display post content if it exists */}
+              {/* Post Content */}
               {post.content && (
                   <section className="post-content">
-                      {/* Simple paragraph display - consider markdown rendering later if needed */}
-                      <p>{post.content}</p>
+                      {/* Render content as plain text - consider Markdown later */}
+                      {/* Using split/map for basic paragraph breaks if content has newlines */}
+                      {post.content.split('\n').map((paragraph, index) => (
+                          <p key={index}>{paragraph || <>&nbsp;</>}</p> // Render empty paragraphs or use &nbsp;
+                      ))}
                   </section>
               )}
 
@@ -240,7 +286,7 @@ function PostDetailPage() {
               {/* Placeholder for Comments Section */}
               <section className="comments-section">
                   <h2>Comments</h2>
-                  {/* Comments list and form will go here */}
+                  {/* TODO: Comments list and form will go here */}
                   <p>(Comments will appear here)</p>
               </section>
 
