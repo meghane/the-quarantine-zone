@@ -1,8 +1,8 @@
 // src/pages/PostDetailPage.jsx
 import React, { useState, useEffect, useCallback } from 'react';
-import { useParams, Link, useNavigate, useLocation } from 'react-router-dom'; // useParams to get ID from URL, Link for Edit, useNavigate for redirects, useLocation for signin redirect state
+import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from '../supabaseClient'; // Adjust path if needed
-import { useAuth } from '../context/AuthContext'; // To check logged-in user
+import { useAuth } from '../context/AuthContext'; // Adjust path if needed
 import './PostDetailPage.css'; // Make sure this CSS file exists and is linked
 
 // Helper function for relative time formatting
@@ -34,11 +34,12 @@ function timeAgo(dateString) {
   }
 }
 
+
 function PostDetailPage() {
-  const { postId } = useParams(); // Get the 'postId' parameter from the URL
+  const { postId } = useParams(); // Get post ID from URL parameter
   const { user } = useAuth(); // Get current logged-in user state
   const navigate = useNavigate(); // Hook for navigation actions
-  const location = useLocation(); // Hook to get current location (used for sign-in redirect)
+  const location = useLocation(); // Hook to get current location (for sign-in redirect)
 
   // State for the post data itself
   const [post, setPost] = useState(null);
@@ -47,22 +48,19 @@ function PostDetailPage() {
   // State for storing general or fetch errors
   const [error, setError] = useState(null);
 
-  // State specifically for tracking the current user's upvote status on this post
-  const [hasUpvoted, setHasUpvoted] = useState(false);
-  // State for loading indicator during the upvote/downvote action
-  const [isVoteLoading, setIsVoteLoading] = useState(false);
+  // State for loading indicator during the upvote action
+  const [isUpdatingVote, setIsUpdatingVote] = useState(false);
   // State for loading indicator during the delete action
   const [isDeleting, setIsDeleting] = useState(false);
 
 
-  // Function to fetch post details and user's vote status
-  // Wrapped in useCallback to stabilize the function reference based on dependencies
+  // Function to fetch post details
+  // Wrapped in useCallback to stabilize the function reference
   const fetchPost = useCallback(async () => {
       // Reset states before fetching
       setLoading(true);
       setError(null);
       setPost(null);
-      setHasUpvoted(false);
 
       try {
           // Fetch post data using the view to include author username
@@ -82,21 +80,8 @@ function PostDetailPage() {
           // Set the fetched post data to state
           setPost(postData);
 
-          // If a user is logged in, check their upvote status for this post
-          if (user) {
-              const { data: voteData, error: voteError, count } = await supabase
-                  .from('post_upvotes')
-                  .select('*', { count: 'exact', head: true }) // Only need to know if > 0 exists
-                  .match({ post_id: postId, user_id: user.id }); // Check for row matching post and user
+          // NOTE: No longer need to fetch user's vote status for the unlimited vote logic
 
-              if (voteError) {
-                  // Log non-critical error but allow page to load
-                  console.warn("Could not check vote status:", voteError.message);
-              } else if (count > 0) {
-                  // User has upvoted this post
-                  setHasUpvoted(true);
-              }
-          }
       } catch (err) {
           // Handle any errors during the fetch process
           console.error("Error fetching post details:", err);
@@ -105,9 +90,9 @@ function PostDetailPage() {
           // Always set loading to false when fetch attempt finishes
           setLoading(false);
       }
-  }, [postId, user]); // Dependencies: Re-run if postId or user object changes
+  }, [postId]); // Dependency: Only re-run if postId changes
 
-  // useEffect hook to call fetchPost when component mounts or dependencies change
+  // useEffect hook to call fetchPost when component mounts or postId changes
   useEffect(() => {
       if (postId) {
           fetchPost(); // Fetch the post data
@@ -116,67 +101,71 @@ function PostDetailPage() {
           setError("No post ID provided.");
           setLoading(false);
       }
-  }, [postId, fetchPost]); // Use the memoized fetchPost function
+  }, [postId, fetchPost]); // Use the memoized fetchPost function here
+
 
   // --- Action Handlers ---
 
-  // Handle Upvote/Downvote Click
+  // Handle Upvote Click (Unlimited Votes Logic)
   const handleUpvote = async () => {
+      // 1. Check if user is logged in
       if (!user) {
           alert("Please sign in to upvote posts!");
           navigate('/signin', { state: { from: location } });
           return;
       }
-      if (isVoteLoading) return; // Prevent double clicks
-      setIsVoteLoading(true);
+      // 2. Prevent multiple clicks while processing
+      if (isUpdatingVote) return;
+      setIsUpdatingVote(true);
       setError(null);
 
+      // 3. Get current upvotes and calculate new count
+      const currentUpvotes = post.upvotes;
+      const newUpvotes = currentUpvotes + 1;
+
+      // 4. Optimistically update UI first for responsiveness
+      setPost(currentPost => ({ ...currentPost, upvotes: newUpvotes }));
+
       try {
-          if (hasUpvoted) { // --- REMOVING VOTE ---
-              const { error: deleteError } = await supabase
-                  .from('post_upvotes')
-                  .delete()
-                  .match({ post_id: postId, user_id: user.id });
-              if (deleteError) throw deleteError;
-              setHasUpvoted(false);
-              setPost(p => ({ ...p, upvotes: Math.max(0, p.upvotes - 1) })); // Optimistic UI update
-          } else { // --- ADDING VOTE ---
-              const { error: insertError } = await supabase
-                  .from('post_upvotes')
-                  .insert({ post_id: postId, user_id: user.id });
-              if (insertError && insertError.code === '23505') { // Handle potential unique violation on rapid clicks
-                  console.warn("Upvote already exists error (23505). Syncing UI.");
-                  setHasUpvoted(true);
-              } else if (insertError) {
-                  throw insertError;
-              } else {
-                  setHasUpvoted(true);
-                  setPost(p => ({ ...p, upvotes: p.upvotes + 1 })); // Optimistic UI update
-              }
+          // 5. Update the database posts table directly
+          const { error: updateError } = await supabase
+              .from('posts')
+              .update({ upvotes: newUpvotes }) // Set the new incremented count
+              .eq('id', postId); // For the specific post
+
+          // 6. If the update failed, revert the optimistic UI update
+          if (updateError) {
+               setPost(currentPost => ({ ...currentPost, upvotes: currentUpvotes })); // Revert
+               throw updateError; // Throw error to be caught
           }
+          // If successful, UI is already updated.
+
       } catch (error) {
+          // Handle errors during the update operation
           console.error("Error handling upvote:", error.message);
           setError(`Vote failed: ${error.message}`);
-          // Consider re-fetching post to correct optimistic update if needed: fetchPost();
+          // Ensure UI is reverted if it hasn't been already
+          setPost(currentPost => ({ ...currentPost, upvotes: currentUpvotes }));
       } finally {
-          setIsVoteLoading(false);
+          // Always set loading back to false
+          setIsUpdatingVote(false);
       }
   };
 
   // Handle Post Deletion Click
   const handleDelete = async () => {
       if (!window.confirm("Are you sure you want to delete this post? This cannot be undone.")) return;
-      if (!user || user.id !== post?.author_id) { // Check ownership again just in case
+      if (!user || user.id !== post?.author_id) {
           alert("You are not authorized to delete this post.");
           return;
       }
-      if (isDeleting) return; // Prevent double clicks
+      if (isDeleting) return;
 
       setIsDeleting(true);
       setError(null);
 
       try {
-          // Delete from posts table matching ID (RLS policy enforces ownership)
+          // RLS Policy should enforce ownership, matching ID is enough here
           const { error: deleteError } = await supabase
               .from('posts')
               .delete()
@@ -190,7 +179,7 @@ function PostDetailPage() {
       } catch (error) {
           console.error("Error deleting post:", error);
           setError(`Failed to delete post: ${error.message}`);
-          alert(`Error: ${error.message}`); // Show alert for deletion error
+          alert(`Error: ${error.message}`);
       } finally {
           setIsDeleting(false);
       }
@@ -202,20 +191,18 @@ function PostDetailPage() {
       return <div className="container post-detail-page"><p style={{textAlign: 'center', margin: '2rem'}}>Loading post...</p></div>;
   }
 
-  // Show error only if the post failed to load initially
-  if (error && !post) {
+  if (error && !post) { // Show error only if initial post load failed
       return <div className="container post-detail-page"><p className="error-message" style={{color: 'red', textAlign: 'center', margin: '2rem'}}>Error: {error}</p></div>;
   }
 
-  // Handle case where post is simply not found after loading
-  if (!post) {
+  if (!post) { // Post not found after loading
       return <div className="container post-detail-page"><p style={{textAlign: 'center', margin: '2rem'}}>Post not found.</p></div>;
   }
 
   // --- Render the Full Post Details ---
   return (
       <div className="container post-detail-page">
-          {/* Display non-critical errors (like vote errors) above the post */}
+          {/* Display non-critical errors (like vote/delete errors) above the post */}
           {error && <p className="error-message" style={{textAlign:'center', color:'red', marginBottom: '1rem'}}>{error}</p>}
 
           <article className="post-full">
@@ -232,12 +219,12 @@ function PostDetailPage() {
                           {/* Upvote Button */}
                           <button
                               onClick={handleUpvote}
-                              disabled={isVoteLoading || !user}
-                              className={`upvote-button ${hasUpvoted ? 'upvoted' : ''}`}
-                              title={!user ? "Sign in to upvote" : (hasUpvoted ? "Remove upvote" : "Upvote")}
-                              aria-pressed={hasUpvoted}
+                              disabled={isUpdatingVote || !user} // Disable if processing or not logged in
+                              className="upvote-button" // No 'upvoted' class needed now
+                              title={!user ? "Sign in to upvote" : "Upvote"}
                           >
-                              <span className="arrow">{hasUpvoted ? '▲' : '△'}</span> Upvote
+                              {/* Consistent icon/text */}
+                              <span className="arrow">▲</span> Upvote
                           </button>
 
                           {/* Conditional Edit/Delete Buttons for Author */}
@@ -273,10 +260,9 @@ function PostDetailPage() {
               {/* Post Content */}
               {post.content && (
                   <section className="post-content">
-                      {/* Render content as plain text - consider Markdown later */}
-                      {/* Using split/map for basic paragraph breaks if content has newlines */}
+                      {/* Render content paragraphs */}
                       {post.content.split('\n').map((paragraph, index) => (
-                          <p key={index}>{paragraph || <>&nbsp;</>}</p> // Render empty paragraphs or use &nbsp;
+                          <p key={index}>{paragraph || <>&nbsp;</>}</p>
                       ))}
                   </section>
               )}
