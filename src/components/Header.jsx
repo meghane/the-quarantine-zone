@@ -1,4 +1,5 @@
-import React from 'react';
+
+import React, { useState } from 'react'; // 👈 Import useState
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext'; // 👈 Import useAuth
 import './Header.css';
@@ -6,10 +7,21 @@ import './Header.css';
 function Header() {
   const { user, profile, signOut } = useAuth(); // 👈 Get user, profile and signOut from context
   const navigate = useNavigate();
+  const [searchInput, setSearchInput] = useState('');
 
   const handleSearch = (event) => {
-    event.preventDefault();
-    console.log("Searching for:", event.target.elements.search.value);
+    event.preventDefault(); // Prevent default form submission (page reload)
+    const searchTerm = searchInput.trim(); // Get trimmed search term from state
+
+    if (searchTerm) {
+      // Navigate to home page with search query parameter
+      navigate(`/?search=${encodeURIComponent(searchTerm)}`);
+    } else {
+      // If search term is empty, navigate to home page without search parameter
+      navigate('/');
+    }
+    // Optionally clear search input after submission?
+    // setSearchInput('');
   };
 
   const handleSignOut = async () => {
@@ -31,7 +43,14 @@ function Header() {
         </h1>
         {/* Keep Search Form */}
         <form className="search-form" onSubmit={handleSearch}>
-          <input type="search" name="search" placeholder="Search Posts..." aria-label="Search Posts"/>
+          <input
+            type="search"
+            name="search"
+            placeholder="Search Posts by Title..."
+            aria-label="Search Posts"
+            value={searchInput} // 👈 Control input value
+            onChange={(e) => setSearchInput(e.target.value)} // 👈 Update state on change
+          />
           <button type="submit">Search</button>
         </form>
 

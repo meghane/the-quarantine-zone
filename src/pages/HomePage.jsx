@@ -3,34 +3,35 @@ import React, { useState, useEffect } from 'react';
 import SortControls from '../components/SortControls'; // Adjust path if needed
 import PostPreview from '../components/PostPreview'; // Adjust path if needed
 import { supabase } from '../supabaseClient'; // Adjust path if needed
-import './HomePage.css'; // Make sure this CSS file exists and is linked
+import './HomePage.css';
+import { useSearchParams } from 'react-router-dom';
 
 // Helper function for relative time formatting
 function timeAgo(dateString) {
   if (!dateString) return '';
   try {
-      const date = new Date(dateString);
-      // Check if date is valid before calculating
-      if (isNaN(date.getTime())) {
-          return 'Invalid date';
-      }
-      const seconds = Math.floor((new Date() - date) / 1000);
-      let interval = seconds / 31536000; // years
-      if (interval > 1) return Math.floor(interval) + " years ago";
-      interval = seconds / 2592000; // months
-      if (interval > 1) return Math.floor(interval) + " months ago";
-      interval = seconds / 86400; // days
-      if (interval > 1) return Math.floor(interval) + " days ago";
-      interval = seconds / 3600; // hours
-      if (interval > 1) return Math.floor(interval) + " hours ago";
-      interval = seconds / 60; // minutes
-      if (interval > 1) return Math.floor(interval) + " minutes ago";
-      // Handle future posts or posts created exactly now
-      if (seconds < 0) return `in ${Math.floor(Math.abs(seconds))} seconds`;
-      return Math.max(0, Math.floor(seconds)) + " seconds ago"; // Ensure non-negative seconds
-  } catch (e) {
-      console.error("Error formatting date:", dateString, e);
+    const date = new Date(dateString);
+    // Check if date is valid before calculating
+    if (isNaN(date.getTime())) {
       return 'Invalid date';
+    }
+    const seconds = Math.floor((new Date() - date) / 1000);
+    let interval = seconds / 31536000; // years
+    if (interval > 1) return Math.floor(interval) + " years ago";
+    interval = seconds / 2592000; // months
+    if (interval > 1) return Math.floor(interval) + " months ago";
+    interval = seconds / 86400; // days
+    if (interval > 1) return Math.floor(interval) + " days ago";
+    interval = seconds / 3600; // hours
+    if (interval > 1) return Math.floor(interval) + " hours ago";
+    interval = seconds / 60; // minutes
+    if (interval > 1) return Math.floor(interval) + " minutes ago";
+    // Handle future posts or posts created exactly now
+    if (seconds < 0) return `in ${Math.floor(Math.abs(seconds))} seconds`;
+    return Math.max(0, Math.floor(seconds)) + " seconds ago"; // Ensure non-negative seconds
+  } catch (e) {
+    console.error("Error formatting date:", dateString, e);
+    return 'Invalid date';
   }
 }
 
@@ -40,6 +41,9 @@ function HomePage() {
   const [sortBy, setSortBy] = useState('newest'); // Default sort
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const [searchParams] = useSearchParams(); // 👈 Get search params hook
+  const searchTerm = searchParams.get('search') || '';
 
   // useEffect hook to fetch posts when component mounts or sortBy changes
   useEffect(() => {
@@ -53,12 +57,19 @@ function HomePage() {
           .from('posts_with_author_username') // Query the view
           .select('*'); // Select all columns from the view (includes author_username)
 
+
+        if (searchTerm) {
+          // Use ilike for case-insensitive search
+          // % is wildcard: searches for term anywhere in title
+          query = query.ilike('title', `%${searchTerm}%`);
+        }
+
         // Apply sorting (using columns available in the view)
         if (sortBy === 'newest') {
           query = query.order('created_at', { ascending: false });
         } else if (sortBy === 'popular') {
           query = query.order('upvotes', { ascending: false })
-                       .order('created_at', { ascending: false });
+            .order('created_at', { ascending: false });
         }
 
         // Execute the query
@@ -85,16 +96,16 @@ function HomePage() {
 
     fetchPosts(); // Run the fetch function
 
-  }, [sortBy]); // Re-run effect if 'sortBy' changes
+  }, [sortBy, searchTerm]); // Re-run effect if 'sortBy' changes
 
   // --- Conditional Rendering Logic ---
   let content;
   if (isLoading) {
-    content = <p className="loading-message" style={{textAlign: 'center', margin: '2rem'}}>Loading posts...</p>;
+    content = <p className="loading-message" style={{ textAlign: 'center', margin: '2rem' }}>Loading posts...</p>;
   } else if (error) {
-    content = <p className="error-message" style={{color: 'red', textAlign: 'center', margin: '2rem'}}>{error}</p>;
+    content = <p className="error-message" style={{ color: 'red', textAlign: 'center', margin: '2rem' }}>{error}</p>;
   } else if (posts.length === 0) {
-    content = <p className="no-posts-message" style={{textAlign: 'center', margin: '2rem'}}>No posts yet! Be the first to create one.</p>;
+    content = <p className="no-posts-message" style={{ textAlign: 'center', margin: '2rem' }}>No posts yet! Be the first to create one.</p>;
   } else {
     // Map over the posts data and render a PostPreview for each one
     content = (
