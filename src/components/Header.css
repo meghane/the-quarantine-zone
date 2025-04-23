@@ -1,75 +1,132 @@
+/* Updated src/components/Header.css */
+
 .app-header {
-    background-color: #008080; /* Tealish color from mockup */
-    padding: 1rem 0;
-    color: white;
-  }
-  
-  .header-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap; /* Allow wrapping on smaller screens */
-  }
-  
-  .site-title a {
-    font-size: 3.0rem;
+  background-color: #008080; /* Your theme color */
+  padding: 0.5rem 0; /* Adjust overall vertical padding if needed */
+  color: white;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* Optional separator */
+}
+
+/* Container base styles (used by title-container and actions-container) */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Title Centering */
+.title-container {
+  text-align: center;
+  padding: 0.75rem 0; /* Padding around the title */
+}
+
+.site-title a {
+  font-size: 3.0rem;
+  font-weight: bold;
+  color: white;
+  font-family: 'Road Rage';
+  text-decoration: none;
+  display: inline-block; /* Needed for text-align to work well */
+}
+
+/* Actions Container Layout (Search + Nav) */
+.actions-container {
+  display: flex;
+  justify-content: space-between; /* Pushes search left, nav right */
+  align-items: center;
+  padding: 0.75rem 1rem; /* Padding above/below search/nav row */
+  flex-wrap: wrap; /* Allow wrap on smaller screens if needed */
+  gap: 1rem; /* Add some gap */
+}
+
+/* Search Form Styles (mostly unchanged) */
+.search-form {
+  display: flex;
+  align-items: center;
+}
+
+.search-form input[type="search"] {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px 0 0 4px;
+  min-width: 200px; /* Or adjust */
+}
+
+.search-form button {
+  padding: 8px 12px;
+  border-radius: 0 4px 4px 0;
+  background-color: #f0f0f0;
+  color: #333;
+  border: 1px solid #ccc;
+  border-left: none;
+}
+
+/* Navigation Styles */
+.main-nav {
+  /* Remove margin-left: auto if it was added */
+}
+
+.main-nav ul {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem; /* Spacing between nav items */
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.main-nav a,
+.nav-username,
+.nav-button {
+  color: white;
+  font-size: 1rem;
+  padding: 5px 0; /* Consistent clickable area */
+  text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  display: inline-block;
+  white-space: nowrap; /* Prevent wrapping on things like 'Hi, username!' */
+}
+
+.nav-username {
+    cursor: default;
     font-weight: bold;
-    color: white;
-    font-family: 'Road Rage';
+}
+
+.main-nav a:hover,
+.nav-button:hover {
+  text-decoration: underline;
+}
+
+/* Updated Responsive Styles */
+@media (max-width: 820px) { /* Adjust breakpoint as needed */
+  .actions-container {
+    flex-direction: column; /* Stack search and nav */
+    align-items: stretch; /* Stretch items full width */
+    justify-content: flex-start; /* Align top */
+    padding-top: 0.5rem;
+    padding-bottom: 1rem;
   }
-  
+
   .search-form {
-    display: flex;
-    align-items: center;
+    width: 100%; /* Make search take full width */
+    margin-bottom: 0.75rem; /* Add space below search */
   }
-  
   .search-form input[type="search"] {
-    padding: 8px 12px;
-    border: 1px solid #ccc;
-    border-radius: 4px 0 0 4px; /* Rounded left corners */
-    min-width: 200px; /* Adjust as needed */
+     flex-grow: 1; /* Allow input to grow */
+     min-width: 150px; /* Adjust min-width if needed */
   }
-  
-  .search-form button {
-    padding: 8px 12px;
-    border-radius: 0 4px 4px 0; /* Rounded right corners */
-    background-color: #f0f0f0; /* Light background for button */
-    color: #333;
-    border: 1px solid #ccc;
-    border-left: none; /* Avoid double border */
+
+  .main-nav {
+     width: 100%; /* Ensure nav takes full width */
+     margin-left: 0; /* Reset any margin */
   }
-  
+
   .main-nav ul {
-    display: flex;
-    gap: 1.5rem; /* Spacing between nav items */
+     justify-content: center; /* Center nav items when stacked */
+     flex-wrap: wrap; /* Allow nav items to wrap */
+     gap: 1rem 1.5rem; /* Adjust vertical/horizontal gap */
   }
-  
-  .main-nav a {
-    color: white;
-    font-size: 1rem;
-    padding: 5px 0; /* Add some clickable area */
-  }
-  
-  .main-nav a:hover {
-    text-decoration: underline;
-  }
-  
-  /* Basic responsive considerations */
-  @media (max-width: 768px) {
-    .header-container {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 1rem;
-    }
-    .search-form {
-       order: 3; /* Move search below title and nav */
-       width: 100%; /* Make search take full width */
-    }
-     .search-form input[type="search"]{
-        flex-grow: 1; /* Allow input to grow */
-     }
-  
-    .main-nav {
-      order: 2; /* Move nav below title */
-    }
-  }
+}
