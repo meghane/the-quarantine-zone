@@ -98,3 +98,59 @@
   .error-message {
       color: #d9534f; /* Red for errors */
   }
+
+/* src/pages/PostDetailPage.css */
+/* ... other styles ... */
+
+.post-meta .post-actions {
+    margin-left: auto;
+    display: flex;
+    align-items: center; /* Align button vertically */
+    gap: 0.5rem;
+}
+
+.upvote-count {
+    margin-left: 1rem; /* Space before upvote count */
+    font-weight: bold;
+}
+
+.upvote-button {
+    background: none;
+    border: 1px solid #ccc;
+    padding: 4px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-flex; /* Align icon and text */
+    align-items: center;
+    gap: 5px;
+    color: #555;
+    transition: all 0.2s ease;
+}
+
+.upvote-button .arrow {
+    font-size: 1.2em; /* Make arrow slightly bigger */
+    line-height: 1;
+}
+
+.upvote-button:hover:not(:disabled) {
+    border-color: #527552; /* Use a theme color */
+    color: #527552;
+}
+
+.upvote-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* Style for when the button is 'upvoted' */
+.upvote-button.upvoted {
+    background-color: #527552; /* Fill button */
+    border-color: #527552;
+    color: white; /* White arrow/text */
+}
+.upvote-button.upvoted .arrow {
+    color: white;
+}
+
+
+/* ... rest of styles ... */
