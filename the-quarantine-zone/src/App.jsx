@@ -11,6 +11,7 @@ import HomePage from './pages/HomePage';
 import CreatePostPage from './pages/CreatePostPage';
 import SignUpPage from './pages/SignUpPage';
 import SignInPage from './pages/SignInPage';
+import PostDetailPage from './pages/PostDetailPage';
 // Import other pages later (e.g., PostDetailPage)
 
 // We are removing the react-hot-toast imports and component
@@ -33,7 +34,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/signin" element={<SignInPage />} />
-          {/* <Route path="/post/:postId" element={<PostDetailPage />} /> */} {/* Add later */}
+          <Route path="/post/:postId" element={<PostDetailPage />} />
 
           {/* Protected Routes */}
           <Route
