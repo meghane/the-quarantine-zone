@@ -1,4 +1,4 @@
-/* src/components/AddCommentForm.css */
+
 .add-comment-form-container {
     margin-top: 2rem;
     padding-top: 1.5rem;
@@ -51,7 +51,6 @@
     cursor: not-allowed;
   }
   
-  /* Re-use error message style if defined globally or copy from other CSS */
   .add-comment-form-container .error-message {
     color: #d9534f;
     background-color: #f2dede;

@@ -1,13 +1,11 @@
-// src/pages/InfoPage.jsx
 import React from 'react';
-import './InfoPage.css'; // Optional: Create this file for styling
+import './InfoPage.css';
 
 function InfoPage() {
-  // Get current year for copyright or info
   const currentYear = new Date().getFullYear();
 
   return (
-    <div className="container info-page"> {/* Use container for consistent width */}
+    <div className="container info-page">
       <h1>About The Quarantine Zone</h1>
       <p className="tagline">A place for fans of The Last of Us - games and show.</p>
 
@@ -17,16 +15,15 @@ function InfoPage() {
           Welcome fellow survivor! This forum, "The Quarantine Zone," was created
           as a project to build a community space dedicated to discussing
           everything related to Naughty Dog's incredible series, The Last of Us.
-          Whether you're passionate about the intricate story of the games (Part I, Left Behind, Part II),
+          Whether you're passionate about the intricate story of the games,
           hooked on the HBO adaptation, or just want to share theories, fan art, or gameplay moments,
           this is the place for you. We aim to provide a platform for respectful discussion,
           analysis, and sharing among fans. Remember to look for the light!
         </p>
-        {/* Add more paragraphs or details about your inspiration or goals */}
       </section>
 
       <section className="info-section">
-        <h2>Terms of Service (Example)</h2>
+        <h2>Terms of Service</h2>
         <p>
           By using The Quarantine Zone, you agree to be respectful towards other users.
           Hate speech, harassment, and spam will not be tolerated. Please be mindful of spoilers
@@ -36,11 +33,10 @@ function InfoPage() {
           to remove content or suspend accounts that violate these terms. Use of this site is
           at your own risk. This is a portfolio project and not a commercial service.
         </p>
-        {/* Expand this significantly for a real application */}
       </section>
 
       <section className="info-section">
-          <h2>Privacy Policy (Example)</h2>
+          <h2>Privacy Policy</h2>
           <p>
               We collect your email address and chosen username during signup solely for
               authentication and display purposes within the app. Passwords are securely
@@ -48,7 +44,6 @@ function InfoPage() {
               Posts and comments you create are linked to your user ID. Please be mindful of the
               information you share publicly in posts and comments. Data is stored securely using Supabase.
           </p>
-          {/* Expand this significantly for a real application */}
       </section>
 
       <footer className="info-footer">

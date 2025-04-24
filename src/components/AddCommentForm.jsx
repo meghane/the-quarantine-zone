@@ -1,23 +1,21 @@
-// src/components/AddCommentForm.jsx
-import React, { useState } from 'react';
-import { supabase } from '../supabaseClient'; // Adjust path
-import { useAuth } from '../context/AuthContext'; // Adjust path
-import './AddCommentForm.css'; // Create this file
 
-// Props: postId (ID of the post being commented on)
-//        onCommentAdded (callback function to notify parent that a comment was added)
+import React, { useState } from 'react';
+import { supabase } from '../supabaseClient'; 
+import { useAuth } from '../context/AuthContext'; 
+import './AddCommentForm.css'; 
+
 function AddCommentForm({ postId, onCommentAdded }) {
-  const { user } = useAuth(); // Get current user
+  const { user } = useAuth(); 
   const [commentText, setCommentText] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState(null);
 
-  // Handle form submission
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!user) {
       alert("You must be logged in to comment.");
-      return; // Should ideally not show form if not logged in, but extra check
+      return; 
     }
     const content = commentText.trim();
     if (!content) {
@@ -29,27 +27,23 @@ function AddCommentForm({ postId, onCommentAdded }) {
     setFormError(null);
 
     try {
-      // Prepare new comment object
       const newComment = {
         post_id: postId,
         user_id: user.id,
         content: content
       };
 
-      // Insert into Supabase 'comments' table
       const { data, error } = await supabase
         .from('comments')
         .insert(newComment)
-        .select() // Optionally select the inserted comment back
-        .single(); // Assuming insert returns the single new row
+        .select() 
+        .single(); 
 
       if (error) throw error;
 
-      // Clear the form
       setCommentText('');
-      // Notify parent component that comment was added (e.g., to trigger refresh)
       if (onCommentAdded) {
-        onCommentAdded(data); // Pass new comment data back if needed
+        onCommentAdded(data); 
       }
 
     } catch (err) {
@@ -60,12 +54,10 @@ function AddCommentForm({ postId, onCommentAdded }) {
     }
   };
 
-  // Render nothing if user isn't logged in
   if (!user) {
-      return <p>Please <Link to="/signin">sign in</Link> to leave a comment.</p>; // Or null
+      return <p>Please <Link to="/signin">sign in</Link> to leave a comment.</p>; 
   }
 
-  // Render the form
   return (
     <div className="add-comment-form-container">
       <h3>Leave a Comment</h3>

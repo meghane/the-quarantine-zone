@@ -1,23 +1,20 @@
-/* Updated src/components/Header.css */
 
 .app-header {
-  background-color: #008080; /* Your theme color */
-  padding: 0.5rem 0; /* Adjust overall vertical padding if needed */
+  background-color: #000000;
+  padding: 0.5rem 0; 
   color: white;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* Optional separator */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2); 
 }
 
-/* Container base styles (used by title-container and actions-container) */
 .container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 1rem;
 }
 
-/* Title Centering */
 .title-container {
   text-align: center;
-  padding: 0.75rem 0; /* Padding around the title */
+  padding: 0.75rem 0; 
 }
 
 .site-title a {
@@ -26,20 +23,18 @@
   color: white;
   font-family: 'Road Rage';
   text-decoration: none;
-  display: inline-block; /* Needed for text-align to work well */
+  display: inline-block; 
 }
 
-/* Actions Container Layout (Search + Nav) */
 .actions-container {
   display: flex;
-  justify-content: space-between; /* Pushes search left, nav right */
+  justify-content: space-between; 
   align-items: center;
-  padding: 0.75rem 1rem; /* Padding above/below search/nav row */
-  flex-wrap: wrap; /* Allow wrap on smaller screens if needed */
-  gap: 1rem; /* Add some gap */
+  padding: 0.75rem 1rem; 
+  flex-wrap: wrap; 
+  gap: 1rem; 
 }
 
-/* Search Form Styles (mostly unchanged) */
 .search-form {
   display: flex;
   align-items: center;
@@ -49,7 +44,7 @@
   padding: 8px 12px;
   border: 1px solid #ccc;
   border-radius: 4px 0 0 4px;
-  min-width: 200px; /* Or adjust */
+  min-width: 200px; 
 }
 
 .search-form button {
@@ -64,7 +59,7 @@
 .main-nav ul {
   display: flex;
   align-items: center;
-  gap: 1.5rem; /* Spacing between nav items */
+  gap: 1.5rem; 
   list-style: none;
   padding: 0;
   margin: 0;
@@ -75,14 +70,14 @@
 .nav-button {
   color: white;
   font-size: 1rem;
-  padding: 5px 0; /* Consistent clickable area */
+  padding: 5px 0; 
   text-decoration: none;
   background: none;
   border: none;
   cursor: pointer;
   font-family: inherit;
   display: inline-block;
-  white-space: nowrap; /* Prevent wrapping on things like 'Hi, username!' */
+  white-space: nowrap; 
 }
 
 .nav-username {
@@ -95,33 +90,32 @@
   text-decoration: underline;
 }
 
-/* Updated Responsive Styles */
-@media (max-width: 820px) { /* Adjust breakpoint as needed */
+@media (max-width: 820px) { 
   .actions-container {
-    flex-direction: column; /* Stack search and nav */
-    align-items: stretch; /* Stretch items full width */
-    justify-content: flex-start; /* Align top */
+    flex-direction: column; 
+    align-items: stretch; 
+    justify-content: flex-start; 
     padding-top: 0.5rem;
     padding-bottom: 1rem;
   }
 
   .search-form {
-    width: 100%; /* Make search take full width */
-    margin-bottom: 0.75rem; /* Add space below search */
+    width: 100%; 
+    margin-bottom: 0.75rem; 
   }
   .search-form input[type="search"] {
-     flex-grow: 1; /* Allow input to grow */
-     min-width: 150px; /* Adjust min-width if needed */
+     flex-grow: 1; 
+     min-width: 150px; 
   }
 
   .main-nav {
-     width: 100%; /* Ensure nav takes full width */
-     margin-left: 0; /* Reset any margin */
+     width: 100%; 
+     margin-left: 0; 
   }
 
   .main-nav ul {
-     justify-content: center; /* Center nav items when stacked */
-     flex-wrap: wrap; /* Allow nav items to wrap */
-     gap: 1rem 1.5rem; /* Adjust vertical/horizontal gap */
+     justify-content: center; 
+     flex-wrap: wrap; 
+     gap: 1rem 1.5rem; 
   }
 }

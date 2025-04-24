@@ -1,6 +1,6 @@
-/* src/components/Comment.css */
+
 .comment {
-    background-color: #f9f9f9; /* Light background for comment */
+    background-color: #f9f9f9; 
     border: 1px solid #eee;
     border-radius: 6px;
     padding: 1rem 1.5rem;
@@ -9,12 +9,12 @@
   
   .comment-meta {
     display: flex;
-    justify-content: space-between; /* Pushes author and time apart */
+    justify-content: space-between; 
     align-items: baseline;
     margin-bottom: 0.75rem;
     font-size: 0.85rem;
     color: #555;
-    border-bottom: 1px dashed #eee; /* Separator line */
+    border-bottom: 1px dashed #eee; 
     padding-bottom: 0.5rem;
   }
   
@@ -34,7 +34,7 @@
     color: #444;
   }
    .comment-content p {
-      margin-bottom: 0.5em; /* Space between paragraphs */
+      margin-bottom: 0.5em; 
    }
   .comment-content p:last-child {
       margin-bottom: 0;
