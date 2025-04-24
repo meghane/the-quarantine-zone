@@ -8,7 +8,6 @@
 
 .comment-meta {
     display: flex;
-    justify-content: space-between;
     align-items: baseline;
     margin-bottom: 0.75rem;
     font-size: 0.85rem;
