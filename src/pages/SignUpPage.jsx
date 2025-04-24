@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { supabase } from '../supabaseClient'; // Adjust path if needed
+import { supabase } from '../supabaseClient'; 
 import { useNavigate, Link } from 'react-router-dom';
-import './SignUpPage.css'; // Create this file
+import './SignUpPage.css'; 
 
 function SignUpPage() {
   const [username, setUsername] = useState('');
@@ -19,7 +19,6 @@ function SignUpPage() {
         setError('Username is required.');
         return;
     }
-    // Basic validation (add more as needed)
     if (!email || !password) {
       setError('Email and Password are required.');
       return;
@@ -27,12 +26,10 @@ function SignUpPage() {
 
     setLoading(true);
     try {
-      // Sign up with Supabase Auth
       const { data, error: signUpError } = await supabase.auth.signUp({
         email: email,
         password: password,
         options: {
-          // Store extra data like username in metadata
           data: {
             username: username.trim(),
           }
@@ -41,17 +38,15 @@ function SignUpPage() {
 
       if (signUpError) throw signUpError;
 
-      // Handle potential user confirmation needed (though disabled for now)
       if (data.user && data.user.identities && data.user.identities.length === 0) {
-         // This case happens if email confirmation is required but not done yet
          setError("Signup successful, but please check your email to confirm (though confirmation is likely disabled for dev).");
-         alert("Signup successful!"); // Adjust message based on confirmation status
+         alert("Signup successful!"); 
          navigate('/'); 
       } else if (data.user) {
           alert('Sign up successful!');
           navigate('/');
       } else {
-           setError("An unknown error occurred during sign up."); // Should not happen often
+           setError("An unknown error occurred during sign up."); 
       }
 
     } catch (error) {
@@ -97,7 +92,7 @@ function SignUpPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            minLength="6" // Supabase default minimum
+            minLength="6" 
             disabled={loading}
           />
         </div>

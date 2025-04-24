@@ -1,13 +1,20 @@
 .sort-controls {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem; 
-    flex-wrap: wrap; 
-    margin-top: 1.5rem;
-  }
-  
-  .sort-controls span {
-    margin-right: 0.5rem;
-    font-weight: bold;
-  }
-  
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 1.5rem;
+  color: #c5c5c5;
+}
+
+.sort-controls span {
+  margin-right: 0.5rem;
+  font-weight: bold;
+  color: #c5c5c5;
+}
+
+.sort-button.active {
+  background-color: #b1903c;
+  color: #1e1e1e;
+  border: 1px solid #b1903c;
+}

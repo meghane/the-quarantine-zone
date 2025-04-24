@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import './Header.css'; 
+import './Header.css';
 
 function Header() {
   const { user, profile, signOut } = useAuth();
@@ -22,7 +22,7 @@ function Header() {
   const handleSignOut = async () => {
     try {
       await signOut();
-      alert('Sign out successful!'); 
+      alert('Sign out successful!');
       navigate('/');
     } catch (error) {
       console.error("Error signing out:", error);
@@ -64,7 +64,7 @@ function Header() {
             )}
             {user && profile?.username && <li className="nav-username">Hi, {profile.username}!</li>}
             {user && <li><button onClick={handleSignOut} className="nav-button">Sign Out</button></li>}
-            <li><Link to="/info">Info</Link></li> 
+            <li><Link to="/info">Info</Link></li>
           </ul>
         </nav>
       </div>

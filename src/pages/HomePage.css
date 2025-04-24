@@ -1,11 +1,11 @@
 .home-page {
-    padding-top: 1.5rem; /* Space below header */
+    padding-top: 1.5rem; 
     padding-bottom: 1.5rem;
   }
   
   .post-feed {
-    margin-top: 1.5rem; /* Space below sort controls */
+    margin-top: 1.5rem; 
     display: flex;
     flex-direction: column;
-    gap: 1rem; /* Space between post previews */
+    gap: 1rem; 
   }

@@ -1,5 +1,5 @@
 import React from 'react';
-import './SortControls.css'; // Create this CSS file
+import './SortControls.css'; 
 
 function SortControls({ currentSort, onSortChange }) {
   return (

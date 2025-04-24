@@ -1,75 +1,60 @@
-/* src/pages/InfoPage.css */
+
 .info-page {
-    padding: 2rem 1rem; /* Add padding around the content */
-    max-width: 800px; /* Limit width for readability */
-    margin: 1rem auto; /* Add top/bottom margin and center horizontally */
-    background-color: #fff; /* Optional: background card */
-    border: 1px solid #eee; /* Optional: border */
-    border-radius: 8px; /* Optional: rounded corners */
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* Optional: shadow */
-    line-height: 1.7; /* Improve text readability */
-    color: #333; /* Default text color */
+    padding: 2rem 1.5rem; 
+    max-width: 800px;
+    margin: 1rem auto;
+    background-color: #333333; 
+    border: 1px solid #444;
+    border-radius: 8px;
+    line-height: 1.7;
+    color: #c5c5c5; 
   }
   
   .info-page h1 {
     text-align: center;
     margin-bottom: 0.5rem;
     font-size: 2.2rem;
-    /* font-family: 'Road Rage', sans-serif; */ /* Optional theme font */
+    color: #e0e0e0;
   }
   
   .info-page .tagline {
       text-align: center;
       margin-bottom: 2.5rem;
       font-style: italic;
-      color: #555;
+      color: #a0a0a0; 
   }
   
   .info-section {
-    margin-bottom: 2.5rem; /* Space between sections */
+    margin-bottom: 2.5rem;
   }
   
   .info-section h2 {
     font-size: 1.6rem;
     margin-bottom: 1rem;
-    border-bottom: 2px solid #eee; /* Separator */
+    border-bottom: 2px solid #444;
     padding-bottom: 0.5rem;
-    color: #006666; /* Use theme accent color */
+    color: #b1903c; 
   }
   
   .info-section p,
   .info-section ul {
     margin-bottom: 1rem;
-    color: #444;
+    color: #c5c5c5; 
   }
    .info-section p:last-child,
-   .info-section ul:last-child {
-       margin-bottom: 0;
-   }
+   .info-section ul:last-child { margin-bottom: 0; }
   
-  
-  .info-section ul {
-      list-style: disc; /* Use standard bullets */
-      margin-left: 1.5rem; /* Indent list */
-      padding-left: 0.5rem;
-  }
-  .info-section ul li {
-      margin-bottom: 0.5rem; /* Space between list items */
-  }
+  .info-section ul { list-style: disc; margin-left: 1.5rem; padding-left: 0.5rem; }
+  .info-section ul li { margin-bottom: 0.5rem; }
   .info-section ul li strong,
-   .info-section ul li b {
-      color: #333; /* Make bolded text slightly darker */
-   }
-  
+   .info-section ul li b { color: #d1d1d1; } 
   
   .info-footer {
       margin-top: 3rem;
       padding-top: 1rem;
-      border-top: 1px solid #eee;
+      border-top: 1px solid #444; 
       text-align: center;
       font-size: 0.85rem;
-      color: #777;
+      color: #a0a0a0;
   }
-  .info-footer p {
-      margin-bottom: 0.25rem;
-  }
+  .info-footer p { margin-bottom: 0.25rem; }
