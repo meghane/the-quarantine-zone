@@ -1,4 +1,4 @@
-/* Basic Reset */
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -6,13 +6,13 @@
 }
 
 body {
-  font-family: sans-serif; /* Choose a suitable font later */
-  background-color: #282c2a; /* Light grey background like mockup */
+  font-family: sans-serif; 
+  background-color: #282c2a; 
   color: #333;
 }
 
 a {
-  color: inherit; /* Remove default blue link color */
+  color: inherit; 
   text-decoration: none;
 }
 
@@ -30,12 +30,12 @@ button {
 }
 
 button.active {
-  background-color: #008080; /* Tealish color for active sort */
+  background-color: #008080; 
   color: white;
 }
 
 .container {
-  max-width: 960px; /* Adjust as needed */
+  max-width: 960px; 
   margin: 0 auto;
   padding: 0 1rem;
 }

@@ -1,8 +1,8 @@
-// src/components/Header.jsx
+
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import './Header.css'; // We will update this CSS file
+import './Header.css'; 
 
 function Header() {
   const { user, profile, signOut } = useAuth();
@@ -22,7 +22,7 @@ function Header() {
   const handleSignOut = async () => {
     try {
       await signOut();
-      alert('Sign out successful!'); // Using alert as requested previously
+      alert('Sign out successful!'); 
       navigate('/');
     } catch (error) {
       console.error("Error signing out:", error);
@@ -32,16 +32,13 @@ function Header() {
 
   return (
     <header className="app-header">
-      {/* Container for the centered title */}
       <div className="title-container container">
         <h1 className="site-title">
           <Link to="/">The Quarantine Zone</Link>
         </h1>
       </div>
 
-      {/* Container for search and navigation actions */}
       <div className="actions-container container">
-        {/* Search Form */}
         <form className="search-form" onSubmit={handleSearch}>
           <input
             type="search"
@@ -54,11 +51,9 @@ function Header() {
           <button type="submit">Search</button>
         </form>
 
-        {/* Navigation */}
         <nav className="main-nav">
           <ul>
             <li><Link to="/">Home</Link></li>
-            {/* Conditionally render Create Post OR Sign Up/Sign In */}
             {user ? (
               <li><Link to="/create">Create New Post</Link></li>
             ) : (
@@ -67,11 +62,9 @@ function Header() {
                 <li><Link to="/signin">Sign In</Link></li>
               </>
             )}
-            {/* Conditionally render User Info/Sign Out */}
             {user && profile?.username && <li className="nav-username">Hi, {profile.username}!</li>}
             {user && <li><button onClick={handleSignOut} className="nav-button">Sign Out</button></li>}
-            {/* Added Info Link - visible always */}
-            <li><Link to="/info">Info</Link></li> {/* Assuming /info is your desired path */}
+            <li><Link to="/info">Info</Link></li> 
           </ul>
         </nav>
       </div>
