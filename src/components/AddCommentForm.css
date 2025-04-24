@@ -1,86 +1,81 @@
-/* src/components/AddCommentForm.css */
+
 
 .add-comment-form-container {
     margin-top: 2rem;
     padding-top: 1.5rem;
-    border-top: 1px solid #444; /* Darker border */
-  }
-  
-  .add-comment-form-container h3 {
-      margin-bottom: 1rem;
-      font-size: 1.2rem;
-      color: #c5c5c5; /* Light grey text */
-  }
-  
-  /* Target the form specifically if needed, otherwise direct element styling is fine */
-  .add-comment-form textarea {
-    /* Appearance */
-    background-color: #444; /* Dark input background */
-    color: #c5c5c5;       /* Light text color */
-    border: 1px solid #666;    /* Darker border */
+    border-top: 1px solid #444;
+}
+
+.add-comment-form-container h3 {
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+    color: #c5c5c5;
+}
+
+.add-comment-form textarea {
+    background-color: #444;
+    color: #c5c5c5;
+    border: 1px solid #666;
     border-radius: 4px;
     padding: 0.75rem;
-    /* Sizing & Behavior */
-    width: 100%;          /* Take full width */
+    width: 100%;
     display: block;
     font-size: 1rem;
-    font-family: inherit; /* Use default page font */
-    resize: vertical;     /* Allow vertical resize */
+    font-family: inherit;
+    resize: vertical;
     min-height: 80px;
-    margin-bottom: 0.75rem; /* Space below textarea */
-  }
-  
-  .add-comment-form textarea:focus {
-      border-color: #b1903c; /* Ochre focus border */
-      outline: none;
-      box-shadow: 0 0 0 3px rgba(177, 144, 60, 0.3); /* Ochre focus glow */
-  }
-  
-  .add-comment-form button {
-    /* Appearance */
-    background-color: #b1903c; /* Ochre accent background */
-    color: #1e1e1e;       /* Dark text on accent BG */
+    margin-bottom: 0.75rem;
+}
+
+.add-comment-form textarea:focus {
+    border-color: #b1903c;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(177, 144, 60, 0.3);
+}
+
+.add-comment-form button {
+    background-color: #b1903c;
+    color: #1e1e1e;
     border: none;
     border-radius: 4px;
-    /* Sizing & Behavior */
     padding: 0.6rem 1.2rem;
     font-size: 1rem;
-    font-weight: bold; /* Make button text bolder */
+    font-weight: bold;
     cursor: pointer;
     transition: background-color 0.2s ease;
-  }
-  
-  .add-comment-form button:hover:not(:disabled) {
-    background-color: #967832; /* Darker ochre on hover */
-  }
-  
-  .add-comment-form button:disabled {
-    background-color: #555; /* Darker grey when disabled */
+}
+
+.add-comment-form button:hover:not(:disabled) {
+    background-color: #967832;
+}
+
+.add-comment-form button:disabled {
+    background-color: #555;
     cursor: not-allowed;
     opacity: 0.7;
-  }
-  
-  /* Dark theme error message style */
-  .add-comment-form-container .error-message {
-    color: #f8b4b4; /* Light red text */
-    background-color: #5c3a3a; /* Dark red background */
-    border: 1px solid #c97b79; /* Muted red border */
+}
+
+.add-comment-form-container .error-message {
+    color: #f8b4b4;
+    background-color: #5c3a3a;
+    border: 1px solid #c97b79;
     padding: 0.75rem 1.25rem;
     border-radius: 4px;
     margin-bottom: 1rem;
     text-align: center;
     font-size: 0.9rem;
-  }
-  
-  /* Style the "Please sign in" text/link */
-  .add-comment-form-container > p {
-      margin-top: 1rem;
-      color: #a0a0a0; /* Dimmer text */
-  }
-  .add-comment-form-container > p > a {
-      color: #b1903c; /* Ochre link */
-      text-decoration: none;
-  }
-  .add-comment-form-container > p > a:hover {
-      text-decoration: underline;
-  }
+}
+
+.add-comment-form-container>p {
+    margin-top: 1rem;
+    color: #a0a0a0;
+}
+
+.add-comment-form-container>p>a {
+    color: #b1903c;
+    text-decoration: none;
+}
+
+.add-comment-form-container>p>a:hover {
+    text-decoration: underline;
+}
