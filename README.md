@@ -2,9 +2,11 @@
 
 Submitted by: **Meghan Thomas - Z23651457**
 
-This web app: **insert description**
+This web app was built to provide a community space dedicated to discussing everything related to Naughty Dog's incredible series, The Last of Us. Whether you're passionate about the intricate story of the games, hooked on the HBO adaptation, or just want to share theories, fan art, or gameplay moments, this is the place for you. We aim to provide a platform for respectful discussion, analysis, and sharing among fans. Remember to look for the light!
 
 Time spent: **X** hours spent in total
+
+Netlify Deployment Link: https://thequarantinezone.netlify.app/ 
 
 ## Required Features
 
@@ -62,7 +64,9 @@ The following **optional** features are implemented:
 
 The following **additional** features are implemented:
 
-* [ ] List anything else that you added to improve the site's functionality!
+- [X] Users must create an account and be signed in to create a new post, upvote, or comment
+- [X] Web app is deployed through Netlify
+- [X] Added an info page where users can view the purpose of the app, the TOS, and the Privacy Policy
 
 ## Video Walkthrough
 
@@ -70,12 +74,11 @@ Here's a walkthrough of implemented user stories:
 
 <img src='http://i.imgur.com/link/to/your/gif/file.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
-<!-- Replace this with whatever GIF tool you used! -->
+Here's a walkthrough of the User Login and Sign Up functionality:
+
+<img src='http://i.imgur.com/link/to/your/gif/file.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+
 GIF created with Gifski
-<!-- Recommended tools:
-[Kap](https://getkap.co/) for macOS
-[ScreenToGif](https://www.screentogif.com/) for Windows
-[peek](https://github.com/phw/peek) for Linux. -->
 
 ## Notes
 
@@ -83,7 +86,7 @@ Describe any challenges encountered while building the app.
 
 ## License
 
-    Copyright [yyyy] [name of copyright owner]
+    Copyright [2024] [Meghan Thomas]
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
