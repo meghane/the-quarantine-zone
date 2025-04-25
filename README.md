@@ -6,6 +6,8 @@ This web app was built to provide a community space dedicated to discussing ever
 
 Time spent: **X** hours spent in total
 
+Netlify Deployment Link: https://thequarantinezone.netlify.app/ 
+
 ## Required Features
 
 The following **required** functionality is completed:
@@ -69,6 +71,10 @@ The following **additional** features are implemented:
 ## Video Walkthrough
 
 Here's a walkthrough of implemented user stories:
+
+<img src='http://i.imgur.com/link/to/your/gif/file.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+
+Here's a walkthrough of the User Login and Sign Up functionality:
 
 <img src='http://i.imgur.com/link/to/your/gif/file.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
