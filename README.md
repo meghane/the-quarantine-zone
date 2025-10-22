@@ -1,17 +1,12 @@
-# Web Development Final Project - *The Quarantine Zone*
-
-Submitted by: **Meghan Thomas - Z23651457**
+# *The Quarantine Zone*
 
 This web app was built to provide a community space dedicated to discussing everything related to Naughty Dog's incredible series, The Last of Us. Whether you're passionate about the intricate story of the games, hooked on the HBO adaptation, or just want to share theories, fan art, or gameplay moments, this is the place for you. We aim to provide a platform for respectful discussion, analysis, and sharing among fans. Remember to look for the light!
-
-Time spent: **X** hours spent in total
 
 Netlify Deployment Link: https://thequarantinezone.netlify.app/ 
 
 ## Required Features
 
 The following **required** functionality is completed:
-
 
 - [X] **Web app includes a create form that allows the user to create posts**
   - Form requires users to add a post title
@@ -44,7 +39,6 @@ The following **required** functionality is completed:
   - A previously created post can be deleted from its post page
 
 The following **optional** features are implemented:
-
 
 - [X] Web app implements pseudo-authentication
   - Users can only edit and delete posts or delete comments by entering the secret key, which is set by the user during post creation
@@ -79,10 +73,6 @@ Here's a walkthrough of the User Login and Sign Up functionality:
 <img src='http://i.imgur.com/link/to/your/gif/file.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 GIF created with Gifski
-
-## Notes
-
-Describe any challenges encountered while building the app.
 
 ## License
 
